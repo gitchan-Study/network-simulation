@@ -1,3 +1,5 @@
+package tcp;
+
 // -------------------------
 // TCP 헤더 (간단화된 모델)
 // -------------------------
@@ -34,11 +36,14 @@ public class TcpHeader {
     public boolean syn, ackFlag, fin;
     public String payload;
 
+    public TcpHeader() {
+    }
+
     @Override
     public String toString() {
         return "TCP(srcPort=" + srcPort + ", dstPort=" + dstPort +
                 ", seq=" + seq + ", ack=" + ack +
                 ", flags=" + (syn ? "SYN " : "") + (ackFlag ? "ACK " : "") + (fin ? "FIN " : "") +
-                ", payload=" + (payload != null ? payload : "없음") + ")";
+                ", payload=" + (payload != null ? payload : "None") + ")";
     }
 }
