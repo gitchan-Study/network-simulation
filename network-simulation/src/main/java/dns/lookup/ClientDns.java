@@ -25,7 +25,7 @@ public class ClientDns {
         hostsFile.put("myserver", "192.168.0.100");
     }
 
-    public String resolve(String domain) {
+    public String lookup(String domain) {
         System.out.println("=== Client-side DNS Resolution Start ===");
         System.out.println("[1] 요청 도메인: " + domain);
 

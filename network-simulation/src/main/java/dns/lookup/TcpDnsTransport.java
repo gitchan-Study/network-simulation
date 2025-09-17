@@ -1,5 +1,7 @@
 package dns.lookup;
 
+import dns.server.RootServer;
+
 // -------------------------
 // TCP 기반 DNS 전송
 // -------------------------
@@ -9,11 +11,19 @@ package dns.lookup;
 // -------------------------
 public class TcpDnsTransport implements DnsTransport {
 
+    private RootServer root;
+
+    public TcpDnsTransport(RootServer root) {
+        this.root = root;
+    }
+
     @Override
-    public void send(String query) {
-        System.out.println("🌐 [Transport: TCP] DNS Query 전송");
-        System.out.println("    Payload: \"" + query + "\"");
-        System.out.println("    Source Port = random(에페메럴), Dest Port = 53(DNS)");
-        System.out.println("    TCP 3-way handshake 후 요청\n");
+    public String send(String domain) {
+        System.out.println("🌐 [Transport: TCP] DNS Query 전송: " + domain);
+        System.out.println("    SourcePort=랜덤(에페메럴), DestPort=53(DNS)");
+        System.out.println("    TCP 3-way handshake 후 요청 전송\n");
+
+        // Root → TLD → Authoritative 탐색 실행
+        return root.query(domain);
     }
 }

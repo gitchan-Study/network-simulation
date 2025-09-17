@@ -7,6 +7,7 @@ package dns.server;
 // - query()를 통해 다음 단계로 위임
 // -------------------------
 public abstract class DnsServer {
+
     String name;
 
     public DnsServer(String name) {

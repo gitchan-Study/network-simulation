@@ -9,5 +9,5 @@ package dns.lookup;
 // -------------------------
 interface DnsTransport {
 
-    void send(String query);
+    String send(String query);
 }
