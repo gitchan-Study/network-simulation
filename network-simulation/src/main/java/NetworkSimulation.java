@@ -3,9 +3,9 @@ import dns.lookup.DnsResolver;
 import dns.lookup.UdpDnsTransport;
 import dns.server.DnsTopology;
 import dns.server.RootServer;
-import tcp.TcpClient;
-import tcp.TcpHeader;
-import tcp.TcpServer;
+import transport.TcpClient;
+import transport.TcpHeader;
+import transport.TcpServer;
 
 public class NetworkSimulation {
 
@@ -38,28 +38,40 @@ public class NetworkSimulation {
         // =====================================================
         // 🌐 2. TCP 3-way Handshake (전송 계층)
         // =====================================================
-        // 브라우저가 알아낸 서버 IP 주소로 연결을 시작
-        //  - Client: 브라우저/OS (에페메럴 포트 할당, ISN 선택)
-        //  - Server: 웹 서버 (고정 포트 80, ISN 선택)
-        // Handshake 단계:
+        // DNS 조회로 웹 서버의 IP 주소를 알아낸 후,
+        // 이제 TCP 연결을 맺어야 HTTP 요청을 전송할 수 있다.
+        //
+        // Handshake의 목적:
+        //   - 클라이언트와 서버가 서로의 초기 시퀀스 번호(ISN)를 교환
+        //   - 연결 상태를 동기화하여 "ESTABLISHED" 상태로 진입
+        //
+        // 참여자 역할:
+        //   - Client: 브라우저/OS (임시 포트=에페메럴 포트 할당, ISN 무작위 선택)
+        //   - Server: 웹 서버 (고정 포트=80, ISN 무작위 선택)
+        //
+        // Handshake 단계 (페이로드 없음):
         //   (1) Client → Server : SYN
+        //       - "새로운 연결을 시작하고 싶다"
         //   (2) Server → Client : SYN + ACK
+        //       - "나도 연결 시작할게, 그리고 네 SYN 받았어"
         //   (3) Client → Server : ACK
+        //       - "네 SYN도 잘 받았어, 이제 연결 완료"
         // =====================================================
 
         TcpClient client = new TcpClient(); // 클라이언트 컴퓨터 모형
         TcpServer server = new TcpServer(); // 서버 컴퓨터 모형
 
-        // 1. 클라이언트가 SYN 전송
-        int dstPort = 80;
+        // 1. 클라이언트 → 서버 (SYN)
+        int dstPort = 80; // HTTP 서비스 포트
         TcpHeader syn = client.sendSyn(dstPort);
 
-        // 2. 서버가 SYN+ACK 응답
+        // 2. 서버 → 클라이언트 (SYN+ACK)
         TcpHeader synAck = server.sendSynAck(syn);
 
-        // 3. 클라이언트가 최종 ACK 전송
+        // 3. 클라이언트 → 서버 (ACK)
         TcpHeader ack = client.sendAck(dstPort, synAck.seq);
 
-        System.out.println("\n✅ TCP 3-way handshake 완료 (연결 ESTABLISHED)");
+        // 최종 연결 상태
+        System.out.println("\n✅ TCP 3-way handshake 완료 → 연결 ESTABLISHED");
     }
 }
